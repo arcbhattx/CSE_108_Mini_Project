@@ -1,0 +1,4 @@
+# Ignores envirounment folders
+venv/
+.venv/
+
