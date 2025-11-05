@@ -6,6 +6,6 @@ Technologies:
 
 1) Python Flask: Backend
 2) SQLite: Database
-3) avascript(React): Frontend
+3) Javascript(React): Frontend
 
 **Contains requirements.txt for python package requirements**
