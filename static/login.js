@@ -14,19 +14,19 @@ function login() {
             return;
         }
 
+        // Save token in localStorage
         localStorage.setItem("token", data.token);
 
-        // decode jwt
+        // Decode JWT to check role
         const payload = JSON.parse(atob(data.token.split(".")[1]));
 
-        // FIX: Add /static/ before the HTML file
+        // Redirect based on role
         if (payload.role === "student") {
             window.location.href = "/static/student.html";
         } else if (payload.role === "teacher") {
             window.location.href = "/static/teacher.html";
         } else if (payload.role === "admin") {
-            window.location.href = "/static/admin.html";  // Flask-Admin dashboard
+            window.location.href = "/admin";  // <-- go to Flask-Admin
         }
-
     });
 }

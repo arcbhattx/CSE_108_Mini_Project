@@ -20,6 +20,10 @@ def auth_required(role=None):
             if not token:
                 return jsonify({"error": "Missing token"}), 401
 
+            # Strip "Bearer " if present
+            if token.startswith("Bearer "):
+                token = token.split(" ")[1]
+
             try:
                 data = jwt.decode(token, SECRET, algorithms=["HS256"])
             except:

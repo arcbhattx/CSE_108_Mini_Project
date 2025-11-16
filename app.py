@@ -11,7 +11,10 @@ from models import db, User, Course, Enrollment
 from routes import routes  
 
 app = Flask(__name__)
+from flask_cors import CORS
+
 CORS(app)
+
 
 # CONFIG
 
@@ -41,11 +44,14 @@ admin.add_view(ModelView(Enrollment, db.session))
 
 class AdminSecureModelView(ModelView):
     def is_accessible(self):
+        if request.method == "OPTIONS":
+            return True  # Allow preflight
         token = request.cookies.get("token") or request.headers.get("Authorization")
         if not token:
             return False
-
         try:
+            if token.startswith("Bearer "):
+                token = token.split(" ")[1]
             data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
             return data.get("role") == "admin"
         except Exception:

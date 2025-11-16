@@ -43,11 +43,27 @@ def all_courses():
             "id": c.id,
             "name": c.name,
             "capacity": c.capacity,
-            "teacher_id": c.teacher_id,
+            "teacher_name": c.teacher_rel.username if c.teacher_rel else "TBD",
+            "time": c.time,
             "enrolled": enrolled_count
         })
-
     return jsonify(result)
+
+
+# Drop a course
+@routes.delete("/student/drop/<int:course_id>")
+@auth_required("student")
+def drop_class(course_id):
+    sid = request.user["id"]
+    enrollment = Enrollment.query.filter_by(student_id=sid, course_id=course_id).first()
+    if not enrollment:
+        return jsonify({"error": "Not enrolled in this course"}), 400
+
+    db.session.delete(enrollment)
+    db.session.commit()
+    return jsonify({"message": "Class dropped successfully"})
+
+
 
 
 @routes.get("/student/my-courses")
@@ -59,16 +75,31 @@ def my_courses():
         Enrollment.query
         .filter_by(student_id=sid)
         .join(Course, Enrollment.course_id == Course.id)
+        .join(User, Course.teacher_id == User.id)  # join teacher
+        .add_entity(Course)
+        .add_entity(User)
     )
 
-    return jsonify([
-        {
-            "course_id": e.course_id,
-            "course_name": e.course.name,
-            "grade": e.grade
-        }
-        for e in enrolls
-    ])
+    result = []
+    for e in enrolls:
+        enrollment_obj = e[0]  # Enrollment
+        course_obj = e[1]      # Course
+        teacher_obj = e[2]     # User (teacher)
+
+        enrolled_count = Enrollment.query.filter_by(course_id=course_obj.id).count()
+
+        result.append({
+            "course_id": course_obj.id,
+            "course_name": course_obj.name,
+            "teacher_name": teacher_obj.username if teacher_obj else "TBD",
+            "time": course_obj.time,
+            "enrolled": enrolled_count,
+            "capacity": course_obj.capacity,
+            "grade": enrollment_obj.grade
+        })
+
+    return jsonify(result)
+
 
 
 @routes.get("/student/class/<int:course_id>/count")
@@ -89,21 +120,17 @@ def enroll():
     if not course:
         return jsonify({"error": "Course not found"}), 404
 
-    # check capacity
     count = Enrollment.query.filter_by(course_id=cid).count()
     if count >= course.capacity:
         return jsonify({"error": "Class is full"}), 400
 
-    # prevent duplicate enrollment
     if Enrollment.query.filter_by(student_id=sid, course_id=cid).first():
         return jsonify({"error": "Already enrolled"}), 400
 
     new_enroll = Enrollment(student_id=sid, course_id=cid)
     db.session.add(new_enroll)
     db.session.commit()
-
     return jsonify({"message": "Enrolled successfully"})
-
 
 # 👨‍🏫 TEACHER ROUTE
 
@@ -174,113 +201,3 @@ def update_grade():
     return jsonify({"message": "Grade updated"})
 
 
-# ADMIN 
-
-# ----------------------
-# ADMIN ROUTES
-# ----------------------
-from auth import auth_required  # make sure this is already imported
-
-# --- USERS ---
-@routes.get("/admin/users")
-@auth_required("admin")
-def admin_get_users():
-    users = User.query.all()
-    return jsonify([{"id": u.id, "username": u.username, "role": u.role} for u in users])
-
-
-@routes.post("/admin/users")
-@auth_required("admin")
-def admin_create_user():
-    data = request.json
-    if not all(k in data for k in ("username", "password", "role")):
-        return jsonify({"error": "Missing fields"}), 400
-
-    new_user = User(
-        username=data["username"],
-        password=data["password"],  # consider hashing in production
-        role=data["role"]
-    )
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"message": "User created"}), 201
-
-
-@routes.delete("/admin/users/<int:user_id>")
-@auth_required("admin")
-def admin_delete_user(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify({"message": "User deleted"})
-
-
-# --- COURSES ---
-@routes.get("/admin/courses")
-@auth_required("admin")
-def admin_get_courses():
-    courses = Course.query.all()
-    return jsonify([
-        {"id": c.id, "name": c.name, "capacity": c.capacity, "teacher_id": c.teacher_id} 
-        for c in courses
-    ])
-
-
-@routes.post("/admin/courses")
-@auth_required("admin")
-def admin_create_course():
-    data = request.json
-    if not all(k in data for k in ("name", "capacity", "teacher_id")):
-        return jsonify({"error": "Missing fields"}), 400
-
-    new_course = Course(
-        name=data["name"],
-        capacity=data["capacity"],
-        teacher_id=data["teacher_id"]
-    )
-    db.session.add(new_course)
-    db.session.commit()
-    return jsonify({"message": "Course created"}), 201
-
-
-@routes.delete("/admin/courses/<int:course_id>")
-@auth_required("admin")
-def admin_delete_course(course_id):
-    course = Course.query.get(course_id)
-    if not course:
-        return jsonify({"error": "Course not found"}), 404
-
-    db.session.delete(course)
-    db.session.commit()
-    return jsonify({"message": "Course deleted"})
-
-
-# --- ENROLLMENTS ---
-@routes.get("/admin/enrollments")
-@auth_required("admin")
-def admin_get_enrollments():
-    enrollments = Enrollment.query.all()
-    return jsonify([
-        {
-            "id": e.id,
-            "student_id": e.student_id,
-            "course_id": e.course_id,
-            "grade": e.grade
-        }
-        for e in enrollments
-    ])
-
-
-@routes.delete("/admin/enrollments/<int:enrollment_id>")
-@auth_required("admin")
-def admin_delete_enrollment(enrollment_id):
-    enr = Enrollment.query.get(enrollment_id)
-    if not enr:
-        return jsonify({"error": "Enrollment not found"}), 404
-
-    db.session.delete(enr)
-    db.session.commit()
-    return jsonify({"message": "Enrollment deleted"})
