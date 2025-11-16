@@ -53,6 +53,7 @@ async function loadMyCourses() {
                     Teacher: ${c.teacher_name}<br>
                     Time: ${c.time}<br>
                     Enrolled: ${c.enrolled}/${c.capacity}<br>
+                    Grade: ${c.grade ?? "N/A"}<br><br>
                     <button onclick="drop(${c.course_id})">Drop</button>
                 </div>
             `;

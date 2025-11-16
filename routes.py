@@ -140,14 +140,19 @@ def teacher_classes():
     tid = request.user["id"]
     courses = Course.query.filter_by(teacher_id=tid).all()
 
-    return jsonify([
-        {
+    result = []
+    for c in courses:
+        enrolled_count = Enrollment.query.filter_by(course_id=c.id).count()
+        result.append({
             "id": c.id,
             "name": c.name,
-            "capacity": c.capacity
-        }
-        for c in courses
-    ])
+            "capacity": c.capacity,
+            "teacher_name": c.teacher_rel.username if c.teacher_rel else "TBD",
+            "time": c.time,
+            "enrolled": enrolled_count  # <--- include this
+        })
+    return jsonify(result)
+
 
 
 @routes.get("/teacher/class/<int:course_id>/students")
