@@ -14,9 +14,15 @@ with app.app_context():
         role="admin"
     )
     
-    teacher = User(
+    teacher1 = User(
         username="teacher1",
         password=generate_password_hash("teach123"),
+        role="teacher"
+    )
+
+    teacher2 = User(
+        username="teacher2",
+        password=generate_password_hash("teach456"),
         role="teacher"
     )
 
@@ -32,21 +38,31 @@ with app.app_context():
         role="student"
     )
 
-    # Add users to session first to get IDs
-    db.session.add_all([admin, teacher, student1, student2])
+    student3 = User(
+        username="student3",
+        password=generate_password_hash("stud123"),
+        role="student"
+    )
+
+    db.session.add_all([admin, teacher1, teacher2, student1, student2, student3])
     db.session.commit()
 
     # ---- COURSES ----
-    # Assign teacher_id dynamically from the teacher object
-    c1 = Course(name="CSE 101", capacity=30, teacher_id=teacher.id, time="MWF 9:00-9:50 AM")
-    c2 = Course(name="CSE 162", capacity=25, teacher_id=teacher.id, time="TR 11:00-11:50 AM")
-    c3 = Course(name="MATH 221", capacity=40, teacher_id=teacher.id, time="MWF 10:00-10:50 AM")
+    # Courses for teacher1
+    c1 = Course(name="CSE 101", capacity=30, teacher_id=teacher1.id, time="MWF 9:00-9:50 AM")
+    c2 = Course(name="CSE 162", capacity=25, teacher_id=teacher1.id, time="TR 11:00-11:50 AM")
 
-    db.session.add_all([c1, c2, c3])
+    # Courses for teacher2
+    c3 = Course(name="MATH 221", capacity=40, teacher_id=teacher2.id, time="MWF 10:00-10:50 AM")
+    c4 = Course(name="PHY 101", capacity=35, teacher_id=teacher2.id, time="TR 2:00-2:50 PM")
+
+    db.session.add_all([c1, c2, c3, c4])
     db.session.commit()
 
     print("Database seeded successfully!")
     print(f"Admin -> username: admin | password: admin123")
-    print(f"Teacher -> username: teacher1 | password: teach123")
+    print(f"Teacher1 -> username: teacher1 | password: teach123")
+    print(f"Teacher2 -> username: teacher2 | password: teach456")
     print(f"Student1 -> username: student1 | password: stud123")
     print(f"Student2 -> username: student2 | password: stud123")
+    print(f"Student3 -> username: student3 | password: stud123")
