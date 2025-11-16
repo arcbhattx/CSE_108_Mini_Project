@@ -15,7 +15,16 @@ function logout() {
     window.location = "login.html";
 }
 
-// Check login on page load
+// Tab switching
+function openTab(tabName, element) {
+    document.querySelectorAll(".tabcontent").forEach(t => t.style.display = "none");
+    document.getElementById(tabName).style.display = "block";
+
+    document.querySelectorAll(".tablink").forEach(b => b.classList.remove("active"));
+    element.classList.add("active");
+}
+
+// Load courses on page load
 window.onload = () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -29,33 +38,30 @@ window.onload = () => {
 };
 
 // Load my enrolled courses
-// Load my enrolled courses
 async function loadMyCourses() {
     try {
-        const res = await fetch(`${API}/student/my-courses`, {
-            headers: getHeaders()
-        });
+        const res = await fetch(`${API}/student/my-courses`, { headers: getHeaders() });
         if (!res.ok) throw await res.json();
 
         const data = await res.json();
-        const div = document.getElementById("my-courses");
-        div.innerHTML = "";
+        const tbody = document.getElementById("my-courses");
+        tbody.innerHTML = "";
 
         if (data.length === 0) {
-            div.innerHTML = "<p>You are not enrolled in any courses.</p>";
+            tbody.innerHTML = `<tr><td colspan="6">You are not enrolled in any courses.</td></tr>`;
             return;
         }
 
         data.forEach(c => {
-            div.innerHTML += `
-                <div class="card">
-                    <strong>${c.course_name}</strong><br>
-                    Teacher: ${c.teacher_name}<br>
-                    Time: ${c.time}<br>
-                    Enrolled: ${c.enrolled}/${c.capacity}<br>
-                    Grade: ${c.grade ?? "N/A"}<br><br>
-                    <button onclick="drop(${c.course_id})">Drop</button>
-                </div>
+            tbody.innerHTML += `
+                <tr>
+                    <td>${c.course_name}</td>
+                    <td>${c.teacher_name}</td>
+                    <td>${c.time}</td>
+                    <td>${c.enrolled}/${c.capacity}</td>
+                    <td>${c.grade ?? "N/A"}</td>
+                    <td><button onclick="drop(${c.course_id})">Drop</button></td>
+                </tr>
             `;
         });
     } catch (err) {
@@ -63,38 +69,36 @@ async function loadMyCourses() {
     }
 }
 
-
-// Load all courses
+// Load all courses (Add Courses)
 async function loadAllCourses() {
     try {
-        const res = await fetch(`${API}/student/all-courses`, {
-            headers: getHeaders()
-        });
+        const res = await fetch(`${API}/student/all-courses`, { headers: getHeaders() });
         if (!res.ok) throw await res.json();
 
         const data = await res.json();
-        const div = document.getElementById("all-courses");
-        div.innerHTML = "";
+        const tbody = document.getElementById("all-courses");
+        tbody.innerHTML = "";
 
-        // Fetch current student's courses to know which ones are enrolled
         const myCoursesRes = await fetch(`${API}/student/my-courses`, { headers: getHeaders() });
         const myCourses = await myCoursesRes.json();
         const enrolledCourseIds = myCourses.map(c => c.course_id);
 
         data.forEach(c => {
             const enrolled = enrolledCourseIds.includes(c.id);
-            div.innerHTML += `
-                <div class="card">
-                    <strong>${c.name}</strong><br>
-                    Teacher: ${c.teacher_name}<br>
-                    Time: ${c.time}<br>
-                    Enrolled: ${c.enrolled}/${c.capacity}<br><br>
-                    ${enrolled
-                        ? `<button onclick="drop(${c.id})">Drop</button>`
-                        : `<button onclick="enroll(${c.id})" ${c.enrolled >= c.capacity ? "disabled" : ""}>
-                             ${c.enrolled >= c.capacity ? "Full" : "Enroll"}
-                           </button>`}
-                </div>
+            tbody.innerHTML += `
+                <tr>
+                    <td>${c.name}</td>
+                    <td>${c.teacher_name}</td>
+                    <td>${c.time}</td>
+                    <td>${c.enrolled}/${c.capacity}</td>
+                    <td>
+                        ${enrolled
+                            ? `<button onclick="drop(${c.id})">Drop</button>`
+                            : `<button onclick="enroll(${c.id})" ${c.enrolled >= c.capacity ? "disabled" : ""}>
+                                 ${c.enrolled >= c.capacity ? "Full" : "Enroll"}
+                               </button>`}
+                    </td>
+                </tr>
             `;
         });
     } catch (err) {
@@ -102,7 +106,7 @@ async function loadAllCourses() {
     }
 }
 
-// Enroll in a course
+// Enroll in course
 async function enroll(courseId) {
     try {
         const res = await fetch(`${API}/student/enroll`, {
@@ -110,21 +114,18 @@ async function enroll(courseId) {
             headers: getHeaders(),
             body: JSON.stringify({ course_id: courseId })
         });
-
         const data = await res.json();
         if (res.ok) {
             alert(data.message);
             loadMyCourses();
             loadAllCourses();
-        } else {
-            alert(data.error);
-        }
+        } else alert(data.error);
     } catch (err) {
         alert("Failed to enroll.");
     }
 }
 
-// Drop class
+// Drop course
 async function drop(courseId) {
     try {
         const res = await fetch(`${API}/student/drop/${courseId}`, {
@@ -136,9 +137,7 @@ async function drop(courseId) {
             alert(data.message);
             loadMyCourses();
             loadAllCourses();
-        } else {
-            alert(data.error);
-        }
+        } else alert(data.error);
     } catch (err) {
         alert("Failed to drop class.");
     }

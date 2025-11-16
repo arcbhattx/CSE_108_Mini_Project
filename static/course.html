@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Details</title>
+    <link rel="stylesheet" href="teacher.css">
+</head>
+<body>
+    <div id="header">
+        <button id="back-btn" onclick="goBack()">← Back</button>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <h2 id="course-title">Course</h2>
+
+    <div id="students-container">
+        <table id="students-table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Grade</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody id="students"></tbody>
+        </table>
+    </div>
+
+    <script src="course.js"></script>
+</body>
+</html>
