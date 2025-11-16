@@ -93,8 +93,11 @@ This is a simple web-based course management system for students and teachers. S
 │
 ├─ app.py                # Flask application entry point
 ├─ models.py             # Database models (User, Course, Enrollment)
-├─ seed.py               # Script to seed the database
+├─ mock_data.py          # Script to feed the database
+├─ auth.py               # authentication stuff
+├─ routes.py               # authentication stuff
 ├─ requirements.txt      # Python dependencies
+
 │
 ├─ /static
 │   ├─ login.html        # Login page
