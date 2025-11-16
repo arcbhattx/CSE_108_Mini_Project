@@ -1,5 +1,6 @@
 const API = "http://localhost:3000";
 
+// Add headers for fetch requests
 function getHeaders() {
     return {
         "Content-Type": "application/json",
@@ -7,12 +8,19 @@ function getHeaders() {
     };
 }
 
+// Logout function
 function logout() {
     localStorage.removeItem("token");
     window.location = "login.html";
 }
 
+// Load courses on page load
 window.onload = () => {
+    // Set the welcome message dynamically
+    const teacherName = localStorage.getItem("username") || "Teacher";
+    const welcomeMsg = document.getElementById("welcome-msg");
+    if (welcomeMsg) welcomeMsg.innerText = `Welcome, ${teacherName}`;
+
     loadCourses();
 };
 

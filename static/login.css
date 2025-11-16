@@ -1,0 +1,83 @@
+/* === Body === */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-color: #1e1e2f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f0f0f0;
+}
+
+/* === Container === */
+.container {
+    background-color: #2c2c3e;
+    padding: 40px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    width: 320px;
+    text-align: center;
+}
+
+/* === Heading === */
+.container h2 {
+    margin-bottom: 30px;
+    color: #f0f0f0;
+    font-size: 24px;
+}
+
+/* === Input fields === */
+.container input {
+    width: calc(100% - 24px); /* match container padding */
+    max-width: 280px; /* keep same width as button */
+    padding: 10px 12px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #44445a;
+    color: #f0f0f0;
+    font-size: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container input::placeholder {
+    color: #aaaaaa;
+}
+
+/* === Sign In button === */
+.container button {
+    width: 280px; /* same as max input width */
+    padding: 10px;
+    font-size: 16px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container button:hover {
+    background-color: #ff1a1a;
+}
+
+/* === Responsive tweaks === */
+@media (max-width: 400px) {
+    .container {
+        width: 90%;
+        padding: 30px 20px;
+    }
+
+    .container input, .container button {
+        width: 100%;
+        max-width: none;
+    }
+}

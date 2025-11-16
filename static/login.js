@@ -16,6 +16,7 @@ function login() {
 
         // Save token in localStorage
         localStorage.setItem("token", data.token);
+        localStorage.setItem("username", data.username); 
 
         // Decode JWT to check role
         const payload = JSON.parse(atob(data.token.split(".")[1]));

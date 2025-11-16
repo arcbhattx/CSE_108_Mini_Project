@@ -25,17 +25,23 @@ function openTab(tabName, element) {
 }
 
 // Load courses on page load
+// Set welcome message
 window.onload = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const username = localStorage.getItem("username");
+    if (!username) {
         alert("Not logged in!");
         window.location = "login.html";
         return;
     }
 
+    // Set the top-left welcome
+    document.getElementById("welcome").textContent = `Welcome, ${username}`;
+
+    // Load courses
     loadMyCourses();
     loadAllCourses();
 };
+
 
 // Load my enrolled courses
 async function loadMyCourses() {

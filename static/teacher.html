@@ -5,10 +5,14 @@
     <link rel="stylesheet" href="teacher.css">
 </head>
 <body>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <!-- Top bar -->
+    <div class="top-bar">
+        <div class="top-left" id="welcome-msg">Welcome, Teacher</div>
+        <div class="top-center">ACME University</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 
-    <h2>Teacher Dashboard</h2>
-
+    <!-- Courses Table -->
     <div id="courses-container">
         <table id="courses-table">
             <thead>

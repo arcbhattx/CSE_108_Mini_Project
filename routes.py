@@ -19,7 +19,12 @@ def login():
         return jsonify({"error": "Invalid credentials"}), 401
 
     token = generate_token(user)
-    return jsonify({"token": token})
+    return jsonify({
+        "token": token,
+        "username": user.username,  # <--- add this
+        "role": user.role           # optional, can be useful for frontend
+    })
+
 
 
 @routes.post("/logout")
