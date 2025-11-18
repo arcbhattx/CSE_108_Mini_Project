@@ -1,4 +1,4 @@
-/* === Body === */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -8,7 +8,7 @@ body {
     position: relative;
 }
 
-/* === Header === */
+
 #header {
     display: flex;
     justify-content: space-between;
@@ -29,9 +29,9 @@ body {
     color: #f0f0f0;
 }
 
-/* === Logout button top-right === */
+
 .logout-btn {
-    background-color: #ff4d4d;  /* red */
+    background-color: #ff4d4d;  
     color: white;
     border: none;
     padding: 8px 14px;
@@ -43,7 +43,7 @@ body {
     background-color: #ff1a1a;
 }
 
-/* === Tabs === */
+
 .tabs {
     margin: 20px 0;
 }
@@ -63,7 +63,6 @@ body {
     background-color: #44445a;
 }
 
-/* === Tab content === */
 .tabcontent {
     background-color: #2c2c3e;
     padding: 15px;
@@ -71,7 +70,7 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
-/* === Table styling === */
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -88,7 +87,7 @@ th {
     background-color: #3a3a5c;
 }
 
-/* === Buttons === */
+
 button {
     padding: 5px 10px;
     cursor: pointer;
@@ -107,7 +106,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* === Input Fields === */
+
 input[type="text"], input[type="number"] {
     padding: 6px 10px;
     border-radius: 4px;

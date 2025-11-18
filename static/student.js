@@ -1,6 +1,6 @@
 const API = "http://localhost:3000";
 
-// Add Bearer prefix to token
+
 function getHeaders() {
     const token = localStorage.getItem("token");
     return {
@@ -9,13 +9,12 @@ function getHeaders() {
     };
 }
 
-// Logout
+
 function logout() {
     localStorage.removeItem("token");
     window.location = "login.html";
 }
 
-// Tab switching
 function openTab(tabName, element) {
     document.querySelectorAll(".tabcontent").forEach(t => t.style.display = "none");
     document.getElementById(tabName).style.display = "block";
@@ -24,8 +23,7 @@ function openTab(tabName, element) {
     element.classList.add("active");
 }
 
-// Load courses on page load
-// Set welcome message
+
 window.onload = () => {
     const username = localStorage.getItem("username");
     if (!username) {
@@ -34,16 +32,14 @@ window.onload = () => {
         return;
     }
 
-    // Set the top-left welcome
     document.getElementById("welcome").textContent = `Welcome, ${username}`;
 
-    // Load courses
     loadMyCourses();
     loadAllCourses();
 };
 
 
-// Load my enrolled courses
+
 async function loadMyCourses() {
     try {
         const res = await fetch(`${API}/student/my-courses`, { headers: getHeaders() });
@@ -75,7 +71,7 @@ async function loadMyCourses() {
     }
 }
 
-// Load all courses (Add Courses)
+
 async function loadAllCourses() {
     try {
         const res = await fetch(`${API}/student/all-courses`, { headers: getHeaders() });
@@ -112,7 +108,7 @@ async function loadAllCourses() {
     }
 }
 
-// Enroll in course
+
 async function enroll(courseId) {
     try {
         const res = await fetch(`${API}/student/enroll`, {
@@ -131,7 +127,7 @@ async function enroll(courseId) {
     }
 }
 
-// Drop course
+
 async function drop(courseId) {
     try {
         const res = await fetch(`${API}/student/drop/${courseId}`, {

@@ -12,7 +12,6 @@ function logout() {
     window.location = "login.html";
 }
 
-// Get course ID from URL
 const urlParams = new URLSearchParams(window.location.search);
 const courseId = urlParams.get("course_id");
 

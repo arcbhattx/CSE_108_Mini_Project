@@ -5,21 +5,20 @@
     <link rel="stylesheet" href="student.css">
 </head>
 <body>
-    <!-- Header -->
  <div id="header">
-    <span id="welcome"></span>   <!-- JS fills this with actual username -->
+    <span id="welcome"></span>   
     <h1>ACME University</h1>
     <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
 
-    <!-- Tabs -->
+  
     <div class="tabs">
         <button class="tablink active" onclick="openTab('myCourses', this)">My Courses</button>
         <button class="tablink" onclick="openTab('addCourses', this)">Add Courses</button>
     </div>
 
-    <!-- My Courses Tab -->
+   
     <div id="myCourses" class="tabcontent">
         <table>
             <thead>
@@ -37,7 +36,7 @@
         </table>
     </div>
 
-    <!-- Add Courses Tab -->
+    
     <div id="addCourses" class="tabcontent" style="display:none;">
         <table>
             <thead>
