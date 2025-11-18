@@ -17,7 +17,7 @@ class Course(db.Model):
     name = db.Column(db.String(120))
     capacity = db.Column(db.Integer)
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    time = db.Column(db.String(50))  # e.g., "TR 11:00-11:50 AM"
+    time = db.Column(db.String(50))  
 
     enrollments = db.relationship("Enrollment", back_populates="course")
     teacher_rel = db.relationship("User", back_populates="courses_taught", foreign_keys=[teacher_id])

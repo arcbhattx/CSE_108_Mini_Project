@@ -8,7 +8,7 @@ routes = Blueprint("routes", __name__)
 
 
 
-#  AUTH ROUTES
+#  authentication routes
 
 @routes.post("/login")
 def login():
@@ -21,8 +21,8 @@ def login():
     token = generate_token(user)
     return jsonify({
         "token": token,
-        "username": user.username,  # <--- add this
-        "role": user.role           # optional, can be useful for frontend
+        "username": user.username, 
+        "role": user.role           
     })
 
 
@@ -30,11 +30,10 @@ def login():
 @routes.post("/logout")
 @auth_required()
 def logout():
-    # Token authentication = logout happens on frontend (delete token)
     return jsonify({"message": "Logged out"})
 
 
-#  STUDENT ROUTES
+#  student routes
 
 @routes.get("/student/all-courses")
 @auth_required("student")
@@ -55,7 +54,6 @@ def all_courses():
     return jsonify(result)
 
 
-# Drop a course
 @routes.delete("/student/drop/<int:course_id>")
 @auth_required("student")
 def drop_class(course_id):
@@ -87,9 +85,9 @@ def my_courses():
 
     result = []
     for e in enrolls:
-        enrollment_obj = e[0]  # Enrollment
-        course_obj = e[1]      # Course
-        teacher_obj = e[2]     # User (teacher)
+        enrollment_obj = e[0] 
+        course_obj = e[1]      
+        teacher_obj = e[2]     
 
         enrolled_count = Enrollment.query.filter_by(course_id=course_obj.id).count()
 
@@ -137,7 +135,7 @@ def enroll():
     db.session.commit()
     return jsonify({"message": "Enrolled successfully"})
 
-# 👨‍🏫 TEACHER ROUTE
+# teacher routes
 
 @routes.get("/teacher/classes")
 @auth_required("teacher")
